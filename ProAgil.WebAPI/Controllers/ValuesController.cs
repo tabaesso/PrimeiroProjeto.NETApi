@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using ProAgil.WebAPI.Model;
-using ProAgil.WebAPI.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using ProAgil.Respository;
 
 namespace ProAgil.WebAPI.Controllers
 {
@@ -15,27 +13,26 @@ namespace ProAgil.WebAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        public readonly DataContext _context;
-        public ValuesController(DataContext context)
+        public readonly ProAgilContext _context;
+        public ValuesController(ProAgilContext context)
         {
             _context = context;
-
         }
 
         // GET api/values
         [HttpGet]
-
         public async Task<IActionResult> Get()
         {
             try
             {
-                var resultList = await _context.Eventos.ToListAsync();
-                return Ok(resultList);
+                var results = await _context.Eventos.ToListAsync();
+                
+                return Ok(results);
             }
             catch (System.Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de dados falhou");
-            }
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco Dados Falhou");
+            }            
         }
 
         // GET api/values/5
@@ -44,13 +41,14 @@ namespace ProAgil.WebAPI.Controllers
         {
             try
             {
-                var resultList = await _context.Eventos.FirstOrDefaultAsync(x => x.EventoId == id);;
-                return Ok(resultList);
+                var results = await _context.Eventos.FirstOrDefaultAsync(x => x.Id == id);
+                
+                return Ok(results);
             }
             catch (System.Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de dados falhou");
-            }
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco Dados Falhou");
+            }  
         }
 
         // POST api/values
